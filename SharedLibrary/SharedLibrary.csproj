@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <PostBuildEvent>
+            copy SharedLibrary.dll C:\Users\avast\UnityProjects\BlackRed\Assets\DLLs\SharedLibrary.dll
+        </PostBuildEvent>
+
+        <LangVersion>11</LangVersion>
+
+        <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

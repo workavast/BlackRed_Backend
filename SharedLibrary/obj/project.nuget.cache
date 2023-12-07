@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "EfVGIM/uJODtTKESTQbiVmo0JmPfai7uCAdisCu0M4Dob105gGo6R0U94iVzRQGR91tOYIxsTf1c0Cts5QJhIg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\SharedLibrary\\SharedLibrary.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\avast\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
