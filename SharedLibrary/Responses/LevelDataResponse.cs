@@ -6,6 +6,13 @@ public class LevelDataResponse
     public float Time { get; set; }
     public string Way { get; set; }
 
+    public LevelDataResponse()
+    {
+        Num = default;
+        Time = default;
+        Way = default;
+    }
+    
     public LevelDataResponse(Level level)
     {
         Num = level.Num;

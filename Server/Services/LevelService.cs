@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SharedLibrary.Requests;
 using SharedLibrary;
 using SharedLibrary.Responses;
@@ -14,8 +15,12 @@ public class LevelService : ILevelService
         _context = context;
     }
     
-    public LevelServiceResult CreateNewLevelData(int userId, LevelChangeRequest request)
+    public LevelServiceResult RegisterNewLevelResult(int userId, LevelChangeRequest request)
     {
+        var result = _context.Levels.SingleOrDefault(l => l.UserId == userId && l.Num == request.Num);
+        if (result != null)
+            return LevelServiceResult.LevelExist;
+
         var newLevelData = new Level()
         {
             UserId = userId,
@@ -53,27 +58,35 @@ public class LevelService : ILevelService
         return levelsDatas;
     }
 
-    public List<Level> TakeLeaderboardPage(int levelNum, float playerLevelTime)
+    public LeaderBordResponse TakeLeaderboardPage(int levelNum, int userId)
     {
-        var result = _context.Levels.Where(l => l.Num == levelNum);
+        var result = _context.Levels.Include(u => u.User).Where(l => l.Num == levelNum);
         var newResult = result.OrderBy(l => l.Time);
+        var chunks = newResult.ToList().Chunk(10);
         
-        var playerResult = newResult.FirstOrDefault(l => l.UserId == 2);
+        var playerResult = newResult.FirstOrDefault(l => l.UserId == userId);
+        if (playerResult is null) return new LeaderBordResponse();
+            
+        var chunk = chunks.FirstOrDefault(c => c.Contains(playerResult));
         
-        var chunks = newResult.Chunk(10).Where(c => c.Contains(playerResult));
-        var chunk = chunks.Where(c => c.Contains(playerResult));
-
         //TODO: create leaderboard response
-        return chunk.First().ToList();
+        if (chunk == null) return new LeaderBordResponse();
+        
+        var finalResult = new LeaderBordResponse(chunk.Select(d => new LeaderBordRowResponse(d.User.Name, d.Time)).ToList());
+        return finalResult;
     }
 
     private const float WaysTimeStep = 0.5f;
-    public List<string> TakeNearWays(int levelNum, float levelTime)
+    public List<string> TakeNearWays(int levelNum, int userId)
     {
+        var res = _context.Levels.SingleOrDefault(l => l.UserId == userId && l.Num == levelNum);
+        if (res is null)
+            return new List<string>();
+        
         var ways = new List<string>();
         for (int i = 0; i < 5; i++)
         {
-            var way = TakeNearWay(levelNum, levelTime + WaysTimeStep * i);
+            var way = TakeNearWay(levelNum, res.Time + WaysTimeStep * i);
             
             if (way != null) 
                 ways.Add(way);
@@ -97,9 +110,9 @@ public class LevelService : ILevelService
 
 public interface ILevelService
 {
-    public LevelServiceResult CreateNewLevelData(int userId, LevelChangeRequest request);
+    public LevelServiceResult RegisterNewLevelResult(int userId, LevelChangeRequest request);
     public LevelServiceResult UpdateLevelResult(int userId, LevelChangeRequest request);
     public List<LevelDataResponse> TakePlayerLevelsData(int userId);
-    public List<Level> TakeLeaderboardPage(int levelNum, float playerLevelTime);
-    public List<string> TakeNearWays(int levelNum, float levelTime);
+    public LeaderBordResponse TakeLeaderboardPage(int levelNum, int userId);
+    public List<string> TakeNearWays(int levelNum, int userId);
 }

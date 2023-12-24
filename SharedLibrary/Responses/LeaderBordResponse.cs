@@ -2,5 +2,15 @@ namespace SharedLibrary.Responses;
 
 public class LeaderBordResponse
 {
-    private List<OtherPlayerLevelData> Data { get; set; } = new List<OtherPlayerLevelData>();
+    public List<LeaderBordRowResponse> Data { get; set; }
+
+    public LeaderBordResponse()
+    {
+        Data = new List<LeaderBordRowResponse>();
+    }
+    
+    public LeaderBordResponse(List<LeaderBordRowResponse> data)
+    {
+        Data = data;
+    }
 }

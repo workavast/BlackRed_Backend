@@ -28,7 +28,8 @@ public class LevelController : ControllerBase
         if (value == null) return BadRequest();
         
         var userId = int.Parse(value);
-        var result = _levelService.CreateNewLevelData(userId, request);
+        
+        var result = _levelService.RegisterNewLevelResult(userId, request);
         
         if(result == LevelServiceResult.Ok) 
             return Ok();
@@ -74,15 +75,23 @@ public class LevelController : ControllerBase
     [HttpPost("TakeLeaderboardPage")]
     public IActionResult TakeLeaderboardPage(LeaderBordRequest request)
     {
-        _levelService.TakeLeaderboardPage(request.LevelNum, request.PlayerLevelTime);
-        return Ok();
+        var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (value == null) return BadRequest();
+        
+        var userId = int.Parse(value);
+        var result = _levelService.TakeLeaderboardPage(request.LevelNum, userId);
+        return Ok(result);
     }
     
     [Authorize]
     [HttpPost("TakeNearWays")]
     public IActionResult TakeNearWays(TakeNearWaysRequest request)
     {
-        var ways = _levelService.TakeNearWays(request.LevelNum, request.LevelTime);
+        var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (value == null) return BadRequest();
+        
+        var userId = int.Parse(value);
+        var ways = _levelService.TakeNearWays(request.LevelNum, userId);
         
         return Ok(new WaysResponse(ways));
     }

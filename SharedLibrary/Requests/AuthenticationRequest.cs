@@ -4,4 +4,10 @@ public class AuthenticationRequest
 {
     public string UserLogin { get; set; }
     public string UserPassword { get; set; }
+
+    public AuthenticationRequest(string userLogin, string userPassword)
+    {
+        UserLogin = userLogin;
+        UserPassword = userPassword;
+    }
 }
