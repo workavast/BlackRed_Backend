@@ -1249,7 +1249,7 @@
       },
       "SharedLibrary/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v7.0",
+        "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
           "System.ComponentModel.Annotations": "5.0.0"
         },

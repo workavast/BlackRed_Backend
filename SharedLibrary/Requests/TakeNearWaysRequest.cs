@@ -1,7 +1,17 @@
-namespace SharedLibrary.Requests;
-
-public class TakeNearWaysRequest
+namespace SharedLibrary.Requests
 {
-    public int LevelNum { get; set; }
-    public float LevelTime { get; set; }
+    public class TakeNearWaysRequest
+    {
+        public int LevelNum { get; set; }
+    
+        public TakeNearWaysRequest()
+        {
+            LevelNum = default;
+        }
+
+        public TakeNearWaysRequest(int levelNum)
+        {
+            LevelNum = levelNum;
+        }
+    }
 }

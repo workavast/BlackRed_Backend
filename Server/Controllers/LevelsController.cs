@@ -11,11 +11,11 @@ namespace Server.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class LevelController : ControllerBase
+public class LevelsController : ControllerBase
 {
     private readonly ILevelService _levelService;
     
-    public LevelController(ILevelService levelService)
+    public LevelsController(ILevelService levelService)
     {
         _levelService = levelService;
     }
@@ -29,7 +29,7 @@ public class LevelController : ControllerBase
         
         var userId = int.Parse(value);
         
-        var result = _levelService.RegisterNewLevelResult(userId, request);
+        var result = _levelService.RegisterLevelResult(userId, request);
         
         if(result == LevelServiceResult.Ok) 
             return Ok();
@@ -68,12 +68,12 @@ public class LevelController : ControllerBase
         var userId = int.Parse(value);
         var result = _levelService.TakePlayerLevelsData(userId);
         
-        return Ok(new LevelsDatasResponse(){LevelsData = result});
+        return Ok(new TakePlayerLevelsDataResponse(result));
     }
     
     [Authorize]
     [HttpPost("TakeLeaderboardPage")]
-    public IActionResult TakeLeaderboardPage(LeaderBordRequest request)
+    public IActionResult TakeLeaderboardPage(TakeLeaderboardPageRequest request)
     {
         var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (value == null) return BadRequest();
@@ -93,6 +93,6 @@ public class LevelController : ControllerBase
         var userId = int.Parse(value);
         var ways = _levelService.TakeNearWays(request.LevelNum, userId);
         
-        return Ok(new WaysResponse(ways));
+        return Ok(new TakeNearWaysResponse(ways));
     }
 }

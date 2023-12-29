@@ -1,13 +1,20 @@
-namespace SharedLibrary.Requests;
-
-public class AuthenticationRequest
+namespace SharedLibrary.Requests
 {
-    public string UserLogin { get; set; }
-    public string UserPassword { get; set; }
-
-    public AuthenticationRequest(string userLogin, string userPassword)
+    public class AuthenticationRequest
     {
-        UserLogin = userLogin;
-        UserPassword = userPassword;
+        public string UserLogin { get; set; }
+        public string UserPassword { get; set; }
+
+        public AuthenticationRequest()
+        {
+            UserLogin = default;
+            UserPassword = default;
+        }
+    
+        public AuthenticationRequest(string userLogin, string userPassword)
+        {
+            UserLogin = userLogin;
+            UserPassword = userPassword;
+        }
     }
 }

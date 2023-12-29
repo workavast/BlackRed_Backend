@@ -53,6 +53,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ILevelService, LevelService>();
+builder.Services.AddScoped<IFriendsService, FriendsService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
     o.TokenValidationParameters = new TokenValidationParameters()

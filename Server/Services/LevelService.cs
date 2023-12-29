@@ -15,7 +15,7 @@ public class LevelService : ILevelService
         _context = context;
     }
     
-    public LevelServiceResult RegisterNewLevelResult(int userId, LevelChangeRequest request)
+    public LevelServiceResult RegisterLevelResult(int userId, LevelChangeRequest request)
     {
         var result = _context.Levels.SingleOrDefault(l => l.UserId == userId && l.Num == request.Num);
         if (result != null)
@@ -58,21 +58,36 @@ public class LevelService : ILevelService
         return levelsDatas;
     }
 
-    public LeaderBordResponse TakeLeaderboardPage(int levelNum, int userId)
+    public TakeLeaderboardPageResponse TakeLeaderboardPage(int levelNum, int userId)
     {
         var result = _context.Levels.Include(u => u.User).Where(l => l.Num == levelNum);
         var newResult = result.OrderBy(l => l.Time);
         var chunks = newResult.ToList().Chunk(10);
         
         var playerResult = newResult.FirstOrDefault(l => l.UserId == userId);
-        if (playerResult is null) return new LeaderBordResponse();
+        if (playerResult is null) return new TakeLeaderboardPageResponse();
+
+        int chunkNum = 0;
+        Level[]? chunk = null;
+        foreach (var someChunk in chunks)
+        {
+            if (someChunk.Contains(playerResult))
+            {
+                chunk = someChunk;
+                break;
+            }
+
+            chunkNum++;
+        }
+        
+        //TODO: create Leaderboard response
+        if (chunk == null) return new TakeLeaderboardPageResponse();
+
+        List<LeaderboardRowResponse> rows = new List<LeaderboardRowResponse>();
+        for (int i = 0; i < chunk.Length; i++)
+            rows.Add(new LeaderboardRowResponse(10 * chunkNum + i + 1, chunk[i].User.Name, chunk[i].Time));
             
-        var chunk = chunks.FirstOrDefault(c => c.Contains(playerResult));
-        
-        //TODO: create leaderboard response
-        if (chunk == null) return new LeaderBordResponse();
-        
-        var finalResult = new LeaderBordResponse(chunk.Select(d => new LeaderBordRowResponse(d.User.Name, d.Time)).ToList());
+        var finalResult = new TakeLeaderboardPageResponse(rows);
         return finalResult;
     }
 
@@ -83,36 +98,49 @@ public class LevelService : ILevelService
         if (res is null)
             return new List<string>();
         
-        var ways = new List<string>();
-        for (int i = 0; i < 5; i++)
-        {
-            var way = TakeNearWay(levelNum, res.Time + WaysTimeStep * i);
-            
-            if (way != null) 
-                ways.Add(way);
-        }
+        var levelsRes = _context.Levels.Where(
+            l =>
+                l.Num == levelNum &&
+                l.Time < res.Time &&
+                l.Time >= res.Time - WaysTimeStep);
+        
+        var result = levelsRes.OrderBy(r => Guid.NewGuid()).Take(5);
+        var someRes = result?.Select(l => l.Way);
+        return 
+            someRes is null 
+            ? new List<string>() 
+            : someRes.ToList();
 
-        return ways;
+        // var ways = new List<string>();
+        // for (int i = 1; i <= 5; i++)
+        // {
+        //     var way = TakeNearWay(levelNum, res.Time - WaysTimeStep * i);
+        //     
+        //     if (way != null) 
+        //         ways.Add(way);
+        // }
+
+        // return ways;
     }
 
-    private const float TimeRange = 0.25f;
-    private string? TakeNearWay(int levelNum, float levelTime)
-    {
-        var result = _context.Levels.FirstOrDefault(
-            l => 
-            l.Num == levelNum && 
-            l.Time <= levelTime && 
-            l.Time >= levelTime - TimeRange);
-
-        return result?.Way;
-    }
+    // private const float TimeRange = 0.25f;
+    // private string? TakeNearWay(int levelNum, float levelTime)
+    // {
+    //     var result = _context.Levels.FirstOrDefault(
+    //         l => 
+    //         l.Num == levelNum && 
+    //         l.Time <= levelTime && 
+    //         l.Time >= levelTime - TimeRange);
+    //
+    //     return result?.Way;
+    // }
 }
 
 public interface ILevelService
 {
-    public LevelServiceResult RegisterNewLevelResult(int userId, LevelChangeRequest request);
+    public LevelServiceResult RegisterLevelResult(int userId, LevelChangeRequest request);
     public LevelServiceResult UpdateLevelResult(int userId, LevelChangeRequest request);
     public List<LevelDataResponse> TakePlayerLevelsData(int userId);
-    public LeaderBordResponse TakeLeaderboardPage(int levelNum, int userId);
+    public TakeLeaderboardPageResponse TakeLeaderboardPage(int levelNum, int userId);
     public List<string> TakeNearWays(int levelNum, int userId);
 }

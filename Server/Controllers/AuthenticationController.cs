@@ -36,6 +36,6 @@ public class AuthenticationController : ControllerBase
 
         if (!success) return BadRequest(content);
         
-        return Ok(new AuthenticationResponse(){Toke = content} );
+        return Ok(new AuthenticationResponse(content));
     }
 }

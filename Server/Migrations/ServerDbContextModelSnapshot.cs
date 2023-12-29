@@ -21,6 +21,55 @@ namespace Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SharedLibrary.FriendPair", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("User1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("User2Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("FriendPairs");
+                });
+
+            modelBuilder.Entity("SharedLibrary.FriendRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("RecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<short>("RequestState")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("FriendRequests");
+                });
+
             modelBuilder.Entity("SharedLibrary.Level", b =>
                 {
                     b.Property<int>("Id")
@@ -78,6 +127,44 @@ namespace Server.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SharedLibrary.FriendPair", b =>
+                {
+                    b.HasOne("SharedLibrary.User", "User1")
+                        .WithMany("FriendPairs1")
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SharedLibrary.User", "User2")
+                        .WithMany("FriendPairs2")
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("SharedLibrary.FriendRequest", b =>
+                {
+                    b.HasOne("SharedLibrary.User", "Recipient")
+                        .WithMany("Recipients")
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SharedLibrary.User", "Sender")
+                        .WithMany("Senders")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("SharedLibrary.Level", b =>
                 {
                     b.HasOne("SharedLibrary.User", "User")
@@ -91,7 +178,15 @@ namespace Server.Migrations
 
             modelBuilder.Entity("SharedLibrary.User", b =>
                 {
+                    b.Navigation("FriendPairs1");
+
+                    b.Navigation("FriendPairs2");
+
                     b.Navigation("Levels");
+
+                    b.Navigation("Recipients");
+
+                    b.Navigation("Senders");
                 });
 #pragma warning restore 612, 618
         }
