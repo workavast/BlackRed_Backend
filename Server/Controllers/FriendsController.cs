@@ -25,7 +25,7 @@ public class FriendsController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId is null) return BadRequest("no NameIdentifier");
         
-        var res = _friendsService.SendRequest(int.Parse(userId), sendFriendReqRequest.FriendName);
+        var res = _friendsService.SendRequest(int.Parse(userId), sendFriendReqRequest.UserName);
         if (!res)
             return BadRequest("result is null");
 
@@ -58,7 +58,7 @@ public class FriendsController : ControllerBase
     [HttpPost(nameof(CancelFriendReq))]
     public IActionResult CancelFriendReq(CancelFriendReqRequest cancelFriendReqRequest)
     {
-        var res = _friendsService.CancelRequest(cancelFriendReqRequest.RequestId);
+        var res = _friendsService.CancelFriendRequest(cancelFriendReqRequest.RequestId);
         if (!res)
             return BadRequest();
 

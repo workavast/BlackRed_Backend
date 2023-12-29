@@ -2,16 +2,16 @@ using System.Collections.Generic;
 
 namespace SharedLibrary.Responses.FriendsController
 {
-    public class TakeFriendRequestResponse
+    public class TakeFriendReqsResponse
     {
         public List<FriendRequestResponse> FriendRequests { get; set; }
         
-        public TakeFriendRequestResponse()
+        public TakeFriendReqsResponse()
         {
             FriendRequests = new List<FriendRequestResponse>();
         }
         
-        public TakeFriendRequestResponse(List<FriendRequestResponse> friendRequest)
+        public TakeFriendReqsResponse(List<FriendRequestResponse> friendRequest)
         {
             FriendRequests = friendRequest;
         }

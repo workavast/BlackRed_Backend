@@ -75,7 +75,7 @@ public class FriendsService : IFriendsService
         return true;
     }
 
-    public bool CancelRequest(int requestId)
+    public bool CancelFriendRequest(int requestId)
     {
         var res = _context.FriendRequests
             .SingleOrDefault(fr => fr.Id == requestId);
@@ -122,7 +122,7 @@ public class FriendsService : IFriendsService
         return new TakeFriendsResponse(finRes.ToList());
     }
 
-    public TakeFriendRequestResponse TakeFromMeRequests(int userId)
+    public TakeFriendReqsResponse TakeFromMeRequests(int userId)
     {
         var res = _context.FriendRequests
             .Include(fr => fr.Sender)
@@ -130,10 +130,10 @@ public class FriendsService : IFriendsService
             .Where(fr => fr.SenderId == userId)
             .Select(fr => new FriendRequestResponse(fr));
 
-        return new TakeFriendRequestResponse(res.ToList());
+        return new TakeFriendReqsResponse(res.ToList());
     }
 
-    public TakeFriendRequestResponse TakeToMeRequests(int userId)
+    public TakeFriendReqsResponse TakeToMeRequests(int userId)
     {
         var res = _context.FriendRequests
             .Include(fr => fr.Sender)
@@ -141,7 +141,7 @@ public class FriendsService : IFriendsService
             .Where(fr => fr.RecipientId == userId)
             .Select(fr => new FriendRequestResponse(fr));
 
-        return new TakeFriendRequestResponse(res.ToList());
+        return new TakeFriendReqsResponse(res.ToList());
     }
 }
 
@@ -153,13 +153,13 @@ public interface IFriendsService
 
     public bool DeAcceptRequest(int requestId);
 
-    public bool CancelRequest(int requestId);
+    public bool CancelFriendRequest(int requestId);
 
     public bool DeleteFriend(int friendPairId);
 
     public TakeFriendsResponse TakeFriends(int userId);
 
-    public TakeFriendRequestResponse TakeFromMeRequests(int userId);
+    public TakeFriendReqsResponse TakeFromMeRequests(int userId);
 
-    public TakeFriendRequestResponse TakeToMeRequests(int userId);
+    public TakeFriendReqsResponse TakeToMeRequests(int userId);
 }
