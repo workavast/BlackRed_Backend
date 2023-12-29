@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SharedLibrary.Responses
+namespace SharedLibrary.Responses.LevelsController
 {
     public class TakeNearWaysResponse
     {

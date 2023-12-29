@@ -1,4 +1,4 @@
-namespace SharedLibrary.Responses
+namespace SharedLibrary.Responses.LevelsController
 {
     public class LeaderboardRowResponse
     {

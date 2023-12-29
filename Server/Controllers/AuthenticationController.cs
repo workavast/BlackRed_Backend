@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services;
-using SharedLibrary.Requests;
-using SharedLibrary.Responses;
+using SharedLibrary.Requests.AuthenticationController;
+using SharedLibrary.Responses.AuthenticationController;
 
 namespace Server.Controllers;
 

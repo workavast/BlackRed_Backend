@@ -1,4 +1,4 @@
-namespace SharedLibrary.Requests
+namespace SharedLibrary.Requests.LevelsController
 {
     public class LevelChangeRequest
     {

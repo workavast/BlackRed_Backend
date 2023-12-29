@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SharedLibrary;
+using SharedLibrary.Database;
 
 namespace Server;
 

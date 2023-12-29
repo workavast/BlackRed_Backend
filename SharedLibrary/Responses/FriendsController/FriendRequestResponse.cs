@@ -1,4 +1,6 @@
-namespace SharedLibrary.Responses
+using SharedLibrary.Database;
+
+namespace SharedLibrary.Responses.FriendsController
 {
     public class FriendRequestResponse
     {

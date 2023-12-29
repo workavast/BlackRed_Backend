@@ -2,8 +2,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services;
-using SharedLibrary.Requests;
-using SharedLibrary.Responses;
+using SharedLibrary.Requests.LevelsController;
+using SharedLibrary.Responses.LevelsController;
 using SharedLibrary.ServicesResults;
 
 namespace Server.Controllers;

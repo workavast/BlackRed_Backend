@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Server.Models;
-using SharedLibrary;
+using SharedLibrary.Database;
 
 namespace Server.Services;
 

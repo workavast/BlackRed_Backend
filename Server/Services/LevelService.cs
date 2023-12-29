@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SharedLibrary.Requests;
-using SharedLibrary;
-using SharedLibrary.Responses;
+using SharedLibrary.Database;
+using SharedLibrary.Requests.LevelsController;
+using SharedLibrary.Responses.LevelsController;
 using SharedLibrary.ServicesResults;
 
 namespace Server.Services;

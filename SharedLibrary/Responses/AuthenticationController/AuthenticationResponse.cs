@@ -1,4 +1,4 @@
-namespace SharedLibrary.Responses
+namespace SharedLibrary.Responses.AuthenticationController
 {
     public class AuthenticationResponse
     {

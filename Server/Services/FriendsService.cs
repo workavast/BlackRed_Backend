@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SharedLibrary;
-using SharedLibrary.Responses;
+using SharedLibrary.Database;
+using SharedLibrary.Responses.FriendsController;
 
 namespace Server.Services;
 
