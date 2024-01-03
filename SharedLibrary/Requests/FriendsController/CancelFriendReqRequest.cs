@@ -1,17 +1,9 @@
 namespace SharedLibrary.Requests.FriendsController
 {
-    public class CancelFriendReqRequest
+    public class CancelFriendReqRequest : FriendReqBase
     {
-        public int RequestId { get; set; }
+        public CancelFriendReqRequest() : base(){}
         
-        public CancelFriendReqRequest()
-        {
-            RequestId = default;
-        }
-        
-        public CancelFriendReqRequest(int requestId)
-        {
-            RequestId = requestId;
-        }
+        public CancelFriendReqRequest(int requestId) : base(requestId){}
     }
 }

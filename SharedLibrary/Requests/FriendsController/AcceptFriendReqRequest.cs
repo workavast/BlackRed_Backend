@@ -1,17 +1,9 @@
 namespace SharedLibrary.Requests.FriendsController
 {
-    public class AcceptFriendReqRequest
+    public class AcceptFriendReqRequest : FriendReqBase
     {
-        public int RequestId { get; set; }
+        public AcceptFriendReqRequest() : base(){}
         
-        public AcceptFriendReqRequest()
-        {
-            RequestId = default;
-        }
-        
-        public AcceptFriendReqRequest(int requestId)
-        {
-            RequestId = requestId;
-        }
+        public AcceptFriendReqRequest(int requestId) : base(requestId){}
     }
 }
