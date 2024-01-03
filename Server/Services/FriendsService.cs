@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SharedLibrary;
 using SharedLibrary.Database;
 using SharedLibrary.Responses.FriendsController;
 
@@ -13,94 +14,102 @@ public class FriendsService : IFriendsService
         _context = context;
     }
 
-    public bool SendRequest(int userId, string friendName)
+    public ErrorType SendRequest(int userId, string friendName)
     {
         var friend = _context.Users
             .SingleOrDefault(u => u.Name == friendName);
         
         if (friend is null)
-            return false;
-
-        var friendId = friend.Id;
+            return ErrorType.UserDontFound;
+        if (friend.Id == userId)
+            return ErrorType.FriendRequestToSelf;
         
-        var res = _context.FriendRequests
-            .SingleOrDefault(fr => fr.SenderId == userId && fr.RecipientId == friendId);
+        var result = _context.FriendRequests
+            .SingleOrDefault(fr => fr.SenderId == userId && fr.RecipientId == friend.Id);
 
-        if (res != null)
-            return false;
-     
-        var req = new FriendRequest()
+        if (result != null)
+            return ErrorType.FriendRequestExist;
+
+        var friendRequest = new FriendRequest()
         {
             SenderId = userId, 
-            RecipientId = friendId
+            RecipientId = friend.Id
         };
-        _context.FriendRequests.Add(req);
+        _context.FriendRequests.Add(friendRequest);
         _context.SaveChanges();
 
-        return true;
+        return ErrorType.None;
     }
 
-    public bool AcceptRequest(int requestId)
+    public ErrorType AcceptRequest(int userId, int requestId)
     {
-        var res = _context.FriendRequests
+        var friendRequest = _context.FriendRequests
             .SingleOrDefault(fr => fr.Id == requestId);
 
-        if (res is null)
-            return false;
-
-        var fp = new FriendPair()
+        if (friendRequest is null)
+            return ErrorType.FriendRequestDontFound;
+        if (friendRequest.RecipientId != userId)
+            return ErrorType.InvalidUserId;
+        
+        var friendPair = new FriendPair()
         {
-            User1Id = res.SenderId,
-            User2Id = res.RecipientId
+            User1Id = friendRequest.SenderId,
+            User2Id = friendRequest.RecipientId
         };
 
-        _context.FriendRequests.Remove(res);
-        _context.FriendPairs.Add(fp);
+        _context.FriendRequests.Remove(friendRequest);
+        _context.FriendPairs.Add(friendPair);
         _context.SaveChanges();
         
-        return true;
+        return ErrorType.None;
     }
 
-    public bool DeAcceptRequest(int requestId)
+    public ErrorType DeAcceptRequest(int userId, int requestId)
     {
-        var res = _context.FriendRequests
+        var friendRequest = _context.FriendRequests
             .SingleOrDefault(fr => fr.Id == requestId);
 
-        if (res is null)
-            return false;
-
-        _context.FriendRequests.Remove(res);
+        if (friendRequest is null)
+            return ErrorType.FriendRequestDontFound;
+        if (friendRequest.RecipientId != userId)
+            return ErrorType.InvalidUserId;
+        
+        _context.FriendRequests.Remove(friendRequest);
         _context.SaveChanges();
         
-        return true;
+        return ErrorType.None;
     }
 
-    public bool CancelFriendRequest(int requestId)
+    public ErrorType CancelFriendRequest(int userId, int requestId)
     {
-        var res = _context.FriendRequests
+        var friendRequest = _context.FriendRequests
             .SingleOrDefault(fr => fr.Id == requestId);
 
-        if (res is null)
-            return false;
+        if (friendRequest is null)
+            return ErrorType.FriendRequestDontFound;
+        if (friendRequest.SenderId != userId)
+            return ErrorType.InvalidUserId;
 
-        _context.FriendRequests.Remove(res);
+        _context.FriendRequests.Remove(friendRequest);
         _context.SaveChanges();
         
-        return true;
+        return ErrorType.None;
     }
 
-    public bool DeleteFriend(int friendPairId)
+    public ErrorType DeleteFriend(int userId, int friendPairId)
     {
-        var res = _context.FriendPairs
+        var friendPair = _context.FriendPairs
             .SingleOrDefault(fp => fp.Id == friendPairId);
 
-        if (res is null)
-            return false;
+        if (friendPair is null)
+            return ErrorType.FriendPairDontFound;
+        if (friendPair.User1Id != userId && friendPair.User2Id != userId)
+            return ErrorType.InvalidUserId;
 
-        _context.FriendPairs.Remove(res);
+        _context.FriendPairs.Remove(friendPair);
         _context.SaveChanges();
         
-        return true;
+        return ErrorType.None;
     }
 
     public TakeFriendsResponse TakeFriends(int userId)
@@ -117,45 +126,45 @@ public class FriendsService : IFriendsService
             .ToList()
             .Select(fp => new FriendPairResponse(fp.Id,fp.User1.Name));
 
-        var finRes = res1.Concat(res2);
+        var friendPairResponses = res1.Concat(res2);
 
-        return new TakeFriendsResponse(finRes.ToList());
+        return new TakeFriendsResponse(friendPairResponses.ToList());
     }
 
     public TakeFriendReqsResponse TakeFromMeRequests(int userId)
     {
-        var res = _context.FriendRequests
+        var friendRequestResponses = _context.FriendRequests
             .Include(fr => fr.Sender)
             .Include(fr => fr.Recipient)
             .Where(fr => fr.SenderId == userId)
             .Select(fr => new FriendRequestResponse(fr));
 
-        return new TakeFriendReqsResponse(res.ToList());
+        return new TakeFriendReqsResponse(friendRequestResponses.ToList());
     }
 
     public TakeFriendReqsResponse TakeToMeRequests(int userId)
     {
-        var res = _context.FriendRequests
+        var friendRequestResponses = _context.FriendRequests
             .Include(fr => fr.Sender)
             .Include(fr => fr.Recipient)
             .Where(fr => fr.RecipientId == userId)
             .Select(fr => new FriendRequestResponse(fr));
 
-        return new TakeFriendReqsResponse(res.ToList());
+        return new TakeFriendReqsResponse(friendRequestResponses.ToList());
     }
 }
 
 public interface IFriendsService
 {
-    public bool SendRequest(int userId, string friendName);
+    public ErrorType SendRequest(int userId, string friendName);
 
-    public bool AcceptRequest(int requestId);
+    public ErrorType AcceptRequest(int userId, int requestId);
 
-    public bool DeAcceptRequest(int requestId);
+    public ErrorType DeAcceptRequest(int userId, int requestId);
 
-    public bool CancelFriendRequest(int requestId);
+    public ErrorType CancelFriendRequest(int userId, int requestId);
 
-    public bool DeleteFriend(int friendPairId);
+    public ErrorType DeleteFriend(int userId, int friendPairId);
 
     public TakeFriendsResponse TakeFriends(int userId);
 

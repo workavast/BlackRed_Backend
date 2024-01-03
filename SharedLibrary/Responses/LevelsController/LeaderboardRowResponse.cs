@@ -1,3 +1,5 @@
+using SharedLibrary.Database;
+
 namespace SharedLibrary.Responses.LevelsController
 {
     public class LeaderboardRowResponse
@@ -17,6 +19,13 @@ namespace SharedLibrary.Responses.LevelsController
             Place = place;
             UserName = userName;
             Time = time;
+        }
+        
+        public LeaderboardRowResponse(int place, Level level)
+        {
+            Place = place;
+            UserName = level.User.Name;
+            Time = level.Time;
         }
     }
 }

@@ -2,6 +2,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services;
+using SharedLibrary;
+using SharedLibrary.Paths;
 using SharedLibrary.Requests.FriendsController;
 
 namespace Server.Controllers;
@@ -19,96 +21,117 @@ public class FriendsController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost(nameof(SendFriendReq))]
+    [HttpPost(FriendsControllerPaths.SendFriendReq)]
     public IActionResult SendFriendReq(SendFriendReqRequest sendFriendReqRequest)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId is null) return BadRequest("no NameIdentifier");
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
         
-        var res = _friendsService.SendRequest(int.Parse(userId), sendFriendReqRequest.UserName);
-        if (!res)
-            return BadRequest("result is null");
+        var result = _friendsService.SendRequest(userId, sendFriendReqRequest.UserName);
+        
+        if (result != ErrorType.None)
+            return BadRequest(result);
 
         return Ok();
     }
 
     [Authorize]
-    [HttpPost(nameof(AcceptFriendReq))]
+    [HttpPost(FriendsControllerPaths.AcceptFriendReq)]
     public IActionResult AcceptFriendReq(AcceptFriendReqRequest acceptFriendReqRequest)
     {
-        var res = _friendsService.AcceptRequest(acceptFriendReqRequest.RequestId);
-        if (!res)
-            return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
+        
+        var result = _friendsService.AcceptRequest(userId, acceptFriendReqRequest.RequestId);
+        if (result != ErrorType.None)
+            return BadRequest(result);
 
         return Ok();
     }
     
     [Authorize]
-    [HttpPost(nameof(DeAcceptFriendReq))]
+    [HttpPost(FriendsControllerPaths.DeAcceptFriendReq)]
     public IActionResult DeAcceptFriendReq(DeAcceptFriendReqRequest deAcceptFriendReqRequest)
     {
-        var res = _friendsService.DeAcceptRequest(deAcceptFriendReqRequest.RequestId);
-        if (!res)
-            return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
+        
+        var result = _friendsService.DeAcceptRequest(userId, deAcceptFriendReqRequest.RequestId);
+        if (result != ErrorType.None)
+            return BadRequest(result);
 
         return Ok();
     }
     
     [Authorize]
-    [HttpPost(nameof(CancelFriendReq))]
+    [HttpPost(FriendsControllerPaths.CancelFriendReq)]
     public IActionResult CancelFriendReq(CancelFriendReqRequest cancelFriendReqRequest)
     {
-        var res = _friendsService.CancelFriendRequest(cancelFriendReqRequest.RequestId);
-        if (!res)
-            return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
+        
+        var result = _friendsService.CancelFriendRequest(userId, cancelFriendReqRequest.RequestId);
+        if (result != ErrorType.None)
+            return BadRequest(result);
 
         return Ok();
     }
     
     [Authorize]
-    [HttpPost(nameof(DeleteFriend))]
+    [HttpPost(FriendsControllerPaths.DeleteFriend)]
     public IActionResult DeleteFriend(DeleteFriendRequest deleteFriendRequest)
     {
-        var res = _friendsService.DeleteFriend(deleteFriendRequest.RequestId);
-        if (!res)
-            return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
+        
+        var result = _friendsService.DeleteFriend(userId, deleteFriendRequest.RequestId);
+        if (result != ErrorType.None)
+            return BadRequest(result);
 
         return Ok();
     }
     
     [Authorize]
-    [HttpGet(nameof(TakeFriends))]
+    [HttpGet(FriendsControllerPaths.TakeFriends)]
     public IActionResult TakeFriends()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId is null) return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
         
-        var res = _friendsService.TakeFriends(int.Parse(userId));
+        var result = _friendsService.TakeFriends(userId);
 
-        return Ok(res);
+        return Ok(result);
     }
     
     [Authorize]
-    [HttpGet(nameof(TakeFromMeRequests))]
+    [HttpGet(FriendsControllerPaths.TakeFromMeRequests)]
     public IActionResult TakeFromMeRequests()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId is null) return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
         
-        var res = _friendsService.TakeFromMeRequests(int.Parse(userId));
+        var result = _friendsService.TakeFromMeRequests(userId);
 
-        return Ok(res);
+        return Ok(result);
     }
     
     [Authorize]
-    [HttpGet(nameof(TakeToMeRequests))]
+    [HttpGet(FriendsControllerPaths.TakeToMeRequests)]
     public IActionResult TakeToMeRequests()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId is null) return BadRequest();
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr is null) return BadRequest(ErrorType.NoNameIdentifier);
+        var userId = int.Parse(userIdStr);
         
-        var res = _friendsService.TakeToMeRequests(int.Parse(userId));
+        var result = _friendsService.TakeToMeRequests(userId);
 
-        return Ok(res);
+        return Ok(result);
     }
 }

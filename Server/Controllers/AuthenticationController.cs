@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services;
+using SharedLibrary.Paths;
 using SharedLibrary.Requests.AuthenticationController;
 using SharedLibrary.Responses.AuthenticationController;
 
@@ -18,7 +19,7 @@ public class AuthenticationController : ControllerBase
     }
     
     [AllowAnonymous]
-    [HttpPost("Register")]
+    [HttpPost(AuthenticationControllerPaths.Register)]
     public IActionResult Register(AuthenticationRequest request)
     {
         var (success, content) = _authenticationService.Register(request.UserLogin, request.UserPassword);
@@ -29,7 +30,7 @@ public class AuthenticationController : ControllerBase
     }
     
     [AllowAnonymous]
-    [HttpPost("Login")]
+    [HttpPost(AuthenticationControllerPaths.Login)]
     public IActionResult Login(AuthenticationRequest request)
     {
         var (success, content) = _authenticationService.Login(request.UserLogin, request.UserPassword);

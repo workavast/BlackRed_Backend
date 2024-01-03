@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Server.Models;
+using SharedLibrary;
 using SharedLibrary.Database;
 
 namespace Server.Services;
@@ -22,7 +23,7 @@ public class AuthenticationService : IAuthenticationService
     public (bool valide, string content) Register(string login, string password)
     {
         if (_dbContext.Users.Any(s => s.Name == login))
-            return (false, "User with this name is exist");
+            return (false, ErrorType.UserWithTisNameIsExist.ToString());
 
         var passwordHash = ComputeHash(password, login);
         var user = new User{Name = login, PasswordHash = passwordHash, Salt = password};
@@ -30,7 +31,7 @@ public class AuthenticationService : IAuthenticationService
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
         
-        return (true, "ok");
+        return (true, ErrorType.None.ToString());
     }
     
     public (bool valide, string content) Login(string login, string password)
@@ -38,10 +39,10 @@ public class AuthenticationService : IAuthenticationService
         var user = _dbContext.Users.SingleOrDefault(u => u.Name == login);
         
         if (user is null)
-            return (false, "Invalid login");
+            return (false, ErrorType.InvalidLogin.ToString());
 
         if (user.PasswordHash != ComputeHash(password, login))
-            return (false, "Invalid password");
+            return (false, ErrorType.InvalidPassword.ToString());
 
         return (true, GenerateJwtToken(CreateIdentity(user)));
     }
@@ -62,17 +63,8 @@ public class AuthenticationService : IAuthenticationService
         return Convert.ToBase64String(bytes);
     }
 
-    private ClaimsIdentity CreateIdentity(User user)
-    {
-        // return new ClaimsIdentity(new []
-        //     {
-        //         new Claim("id", user.Id.ToString())
-        //     });
-        return new ClaimsIdentity(new []
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-        });
-    }
+    private ClaimsIdentity CreateIdentity(User user) 
+        => new(new[] { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) });
     
     private string GenerateJwtToken(ClaimsIdentity identity)
     {

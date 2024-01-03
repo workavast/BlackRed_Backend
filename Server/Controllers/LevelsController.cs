@@ -2,9 +2,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services;
+using SharedLibrary;
+using SharedLibrary.Paths;
 using SharedLibrary.Requests.LevelsController;
 using SharedLibrary.Responses.LevelsController;
-using SharedLibrary.ServicesResults;
 
 namespace Server.Controllers;
 
@@ -21,49 +22,44 @@ public class LevelsController : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("RegisterLevelResult")]
+    [HttpPost(LevelsControllerPaths.RegisterLevelResult)]
     public IActionResult RegisterLevelResult(LevelChangeRequest request)
     {
         var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (value == null) return BadRequest();
+        if (value == null) return BadRequest(ErrorType.NoNameIdentifier);
         
         var userId = int.Parse(value);
         
         var result = _levelService.RegisterLevelResult(userId, request);
         
-        if(result == LevelServiceResult.Ok) 
-            return Ok();
-        else 
-            return BadRequest();
+        if(result != ErrorType.None) 
+            return BadRequest(result);
+
+        return Ok();
     }
     
     [Authorize]
-    [HttpPost("UpdateLevelResult")]
+    [HttpPost(LevelsControllerPaths.UpdateLevelResult)]
     public IActionResult UpdateLevelResult(LevelChangeRequest request)
     {
         var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (value == null) return BadRequest();
+        if (value == null) return BadRequest(ErrorType.NoNameIdentifier);
         
         var userId = int.Parse(value);
         var result = _levelService.UpdateLevelResult(userId, request);
 
-        switch (result)
-        {
-            case (LevelServiceResult.Ok):
-                return Ok();
-            case (LevelServiceResult.LevelDontFound):
-                return BadRequest("LevelDontFound");
-            default:
-                return BadRequest("Un expected error");
-        }
+        if(result != ErrorType.None)
+            return BadRequest(result);
+
+        return Ok();
     }
     
     [Authorize]
-    [HttpGet("TakePlayerLevelsData")]
+    [HttpGet(LevelsControllerPaths.TakePlayerLevelsData)]
     public IActionResult TakePlayerLevelsData()
     {
         var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (value == null) return BadRequest();
+        if (value == null) return BadRequest(ErrorType.NoNameIdentifier);
         
         var userId = int.Parse(value);
         var result = _levelService.TakePlayerLevelsData(userId);
@@ -72,23 +68,35 @@ public class LevelsController : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("TakeLeaderboardPage")]
-    public IActionResult TakeLeaderboardPage(TakeLeaderboardPageRequest request)
+    [HttpPost(LevelsControllerPaths.TakeGlobalLeaderboardPage)]
+    public IActionResult TakeGlobalLeaderboardPage(TakeLeaderboardPageRequest request)
     {
         var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (value == null) return BadRequest();
+        if (value == null) return BadRequest(ErrorType.NoNameIdentifier);
         
         var userId = int.Parse(value);
-        var result = _levelService.TakeLeaderboardPage(request.LevelNum, userId);
+        var result = _levelService.TakeGlobalLeaderboardPage(request.LevelNum, userId);
         return Ok(result);
     }
     
     [Authorize]
-    [HttpPost("TakeNearWays")]
+    [HttpPost(LevelsControllerPaths.TakeFriendsLeaderboardPage)]
+    public IActionResult TakeFriendsLeaderboardPage(TakeLeaderboardPageRequest request)
+    {
+        var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (value == null) return BadRequest(ErrorType.NoNameIdentifier);
+        
+        var userId = int.Parse(value);
+        var result = _levelService.TakeFriendsLeaderboardPage(request.LevelNum, userId);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpPost(LevelsControllerPaths.TakeNearWays)]
     public IActionResult TakeNearWays(TakeNearWaysRequest request)
     {
         var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (value == null) return BadRequest();
+        if (value == null) return BadRequest(ErrorType.NoNameIdentifier);
         
         var userId = int.Parse(value);
         var ways = _levelService.TakeNearWays(request.LevelNum, userId);
