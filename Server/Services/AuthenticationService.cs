@@ -26,7 +26,7 @@ public class AuthenticationService : IAuthenticationService
             return (false, ErrorType.UserWithTisNameIsExist.ToString());
 
         var passwordHash = ComputeHash(password, login);
-        var user = new User{Name = login, PasswordHash = passwordHash, Salt = password};
+        var user = new User{Name = login, PasswordHash = passwordHash};
 
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();

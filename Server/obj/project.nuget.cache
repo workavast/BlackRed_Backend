@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cTn2tsBDh881xre7khtaLhktsv+oYw0w12g3zU1BBUv+TaOMeDbDnoLuGGbYwcCz2eMMJp9AfPLQ5TKW7A9QVg==",
+  "dgSpecHash": "BiDaziOnJbBB33Jq8fUY82hrsa9GHe+3Y1jQPJXUGUcoxpzksjEaY3et4hoSflDRqtbcto1rFz1auyvBAEgWGw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\Server\\Server.csproj",
+  "projectFilePath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\server\\Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\avast\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\avast\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

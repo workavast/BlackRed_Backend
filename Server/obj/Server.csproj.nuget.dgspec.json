@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\Server\\Server.csproj": {}
+    "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\server\\Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\Server\\Server.csproj": {
+    "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\server\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\Server\\Server.csproj",
+        "projectUniqueName": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\server\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\Server\\Server.csproj",
+        "projectPath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\server\\Server.csproj",
         "packagesPath": "C:\\Users\\avast\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\Server\\obj\\",
+        "outputPath": "C:\\Users\\avast\\RiderProjects\\BlackRed_Backend\\server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\avast\\AppData\\Roaming\\NuGet\\NuGet.Config"
